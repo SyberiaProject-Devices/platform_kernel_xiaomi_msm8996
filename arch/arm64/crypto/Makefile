@@ -33,6 +33,11 @@ obj-$(CONFIG_CRYPTO_SPECK_NEON) += speck-neon.o
 speck-neon-y := speck-neon-core.o speck-neon-glue.o
 
 AFLAGS_aes-ce.o		:= -DINTERLEAVE=2 -DINTERLEAVE_INLINE
+
+obj-$(CONFIG_CRYPTO_AES_ARM64) += aes-arm64.o
+aes-arm64-y := aes-cipher-core.o aes-cipher-glue.o
+
+AFLAGS_aes-ce.o		:= -DINTERLEAVE=4
 AFLAGS_aes-neon.o	:= -DINTERLEAVE=4
 
 CFLAGS_aes-glue-ce.o	:= -DUSE_V8_CRYPTO_EXTENSIONS
