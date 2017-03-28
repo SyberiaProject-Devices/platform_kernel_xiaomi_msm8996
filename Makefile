@@ -645,7 +645,7 @@ KBUILD_CFLAGS 	+= $(call cc-disable-warning, maybe-uninitialized,) \
 		   $(call cc-disable-warning, sizeof-pointer-memaccess,)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
+KBUILD_CFLAGS	+= $(call cc-option,-Oz,-Os) $(call cc-disable-warning,maybe-uninitialized,)
 else
 KBUILD_CFLAGS	+= -O2
 endif
