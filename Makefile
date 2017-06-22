@@ -405,8 +405,8 @@ KBUILD_CFLAGS   := -Werror -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -mcpu=cortex-a57.cortex-a53 -mtune=cortex-a57.cortex-a53 \
-		   -std=gnu89 -Wno-format-truncation \
-		   -fno-store-merging
+		   -std=gnu89 -Wno-format-truncation -Wno-bool-operation \
+		   -Wno-memset-elt-size -Wno-format-overflow -fno-store-merging
 
 # Kryo doesn't need 835769/843419 erratum fixes.
 # Some toolchains enable those fixes automatically, so opt-out.
