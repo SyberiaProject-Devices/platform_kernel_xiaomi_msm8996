@@ -83,11 +83,14 @@ maple_add_request(struct request_queue *q, struct request *rq)
 	/* increase expiration when device is asleep */
 	unsigned int fifo_expire_suspended = mdata->fifo_expire[sync][dir] * sleep_latency_multiple;
 
+	/* increase expiration when device is asleep */
+	unsigned int fifo_expire_suspended = mdata->fifo_expire[sync][dir] * sleep_latency_multiple;
+
 	/*
 	 * Add request to the proper fifo list and set its
 	 * expire time.
 	 */
-	if (display_on && mdata->fifo_expire[sync][dir]) {
+	if (!state_suspended && mdata->fifo_expire[sync][dir]) {
 		rq->fifo_time = jiffies + mdata->fifo_expire[sync][dir];
 		list_add_tail(&rq->queuelist, &mdata->fifo_list[sync][dir]);
 	} else if (!display_on && fifo_expire_suspended) {
