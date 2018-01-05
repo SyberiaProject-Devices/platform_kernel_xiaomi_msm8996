@@ -405,6 +405,17 @@ KBUILD_CFLAGS   := -Werror -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-format-security \
 		   -std=gnu89
 
+# Kryo doesn't need 835769/843419 erratum fixes.
+# Some toolchains enable those fixes automatically, so opt-out.
+KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-835769)
+KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-843419)
+LDFLAGS_vmlinux	+= $(call ld-option, --no-fix-cortex-a53-835769)
+LDFLAGS_vmlinux	+= $(call ld-option, --no-fix-cortex-a53-843419)
+LDFLAGS_MODULE	+= $(call ld-option, --no-fix-cortex-a53-835769)
+LDFLAGS_MODULE	+= $(call ld-option, --no-fix-cortex-a53-843419)
+LDFLAGS		+= $(call ld-option, --no-fix-cortex-a53-835769)
+LDFLAGS		+= $(call ld-option, --no-fix-cortex-a53-843419)
+
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
@@ -610,13 +621,30 @@ all: vmlinux
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
 
-KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
-KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
+KBUILD_CFLAGS	+= $(call cc-option, -fno-delete-null-pointer-checks,)
+KBUILD_CFLAGS	+= $(call cc-disable-warning, frame-address,)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, format-truncation)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, int-in-bool-context)
 KBUILD_CFLAGS	+= $(call cc-option,-fno-PIE)
 KBUILD_AFLAGS	+= $(call cc-option,-fno-PIE)
+
+# Some of those needed to disable annoying warning on GCC 7.x
+KBUILD_CFLAGS 	+= $(call cc-disable-warning, maybe-uninitialized,) \
+		   $(call cc-disable-warning, unused-variable,) \
+		   $(call cc-disable-warning, unused-function,) \
+		   $(call cc-disable-warning, tautological-compare,) \
+		   $(call cc-disable-warning, return-local-addr,) \
+		   $(call cc-disable-warning, array-bounds,) \
+		   $(call cc-disable-warning, misleading-indentation,) \
+		   $(call cc-disable-warning, switch-unreachable,) \
+		   $(call cc-disable-warning, memset-elt-size,) \
+		   $(call cc-disable-warning, bool-operation,) \
+		   $(call cc-disable-warning, parentheses,) \
+		   $(call cc-disable-warning, bool-compare,) \
+		   $(call cc-disable-warning, duplicate-decl-specifier,) \
+		   $(call cc-disable-warning, stringop-overflow,) \
+		   $(call cc-disable-warning, discarded-array-qualifiers,) \
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
