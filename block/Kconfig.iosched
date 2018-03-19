@@ -42,7 +42,7 @@ config IOSCHED_TRIPNDROID
 
 config IOSCHED_MAPLE
 	tristate "Maple I/O scheduler"
-	default y
+	depends on FB
 
 config IOSCHED_CFQ
 	tristate "CFQ I/O scheduler"
