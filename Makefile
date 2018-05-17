@@ -632,7 +632,7 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, int-in-bool-context)
 KBUILD_CFLAGS	+= $(call cc-option,-fno-PIE)
 KBUILD_AFLAGS	+= $(call cc-option,-fno-PIE)
 
-# Some of those needed to disable annoying warning on GCC 7.x
+# Some of those needed to disable annoying warning on GCC 7.x, 8.x
 KBUILD_CFLAGS 	+= $(call cc-disable-warning, maybe-uninitialized,) \
 		   $(call cc-disable-warning, unused-variable,) \
 		   $(call cc-disable-warning, unused-function,) \
@@ -648,6 +648,9 @@ KBUILD_CFLAGS 	+= $(call cc-disable-warning, maybe-uninitialized,) \
 		   $(call cc-disable-warning, duplicate-decl-specifier,) \
 		   $(call cc-disable-warning, stringop-overflow,) \
 		   $(call cc-disable-warning, discarded-array-qualifiers,) \
+		   $(call cc-disable-warning, attribute-alias,) \
+		   $(call cc-disable-warning, packed-not-aligned,) \
+		   $(call cc-disable-warning, sizeof-pointer-memaccess,)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
