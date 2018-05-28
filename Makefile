@@ -650,6 +650,7 @@ KBUILD_CFLAGS 	+= $(call cc-disable-warning, maybe-uninitialized,) \
 		   $(call cc-disable-warning, discarded-array-qualifiers,) \
 		   $(call cc-disable-warning, attribute-alias,) \
 		   $(call cc-disable-warning, packed-not-aligned,) \
+		   $(call cc-disable-warning, deprecated-declarations,) \
 		   $(call cc-disable-warning, sizeof-pointer-memaccess,)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
