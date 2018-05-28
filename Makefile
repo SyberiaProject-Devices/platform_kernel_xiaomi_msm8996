@@ -386,24 +386,27 @@ LINUXINCLUDE    := \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -Werror -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common \
-		   -Werror-implicit-function-declaration \
-		   -Wno-format-security \
-		   -mcpu=cortex-a57.cortex-a53 -mtune=cortex-a57.cortex-a53 \
-		   -std=gnu89 -Wno-format-truncation -Wno-bool-operation \
-		   -Wno-memset-elt-size -Wno-format-overflow -fno-store-merging
+POLLY_FLAGS	:= -mllvm -polly \
+	   -mllvm -polly-parallel \
+	   -mllvm -polly-run-dce \
+	   -mllvm -polly-run-inliner \
+	   -mllvm -polly-opt-fusion=max \
+	   -mllvm -polly-ast-use-context \
+	   -mllvm -polly-detect-keep-going \
+	   -mllvm -polly-vectorizer=stripmine
 
-# Kryo doesn't need 835769/843419 erratum fixes.
-# Some toolchains enable those fixes automatically, so opt-out.
-KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-835769)
-KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-843419)
-LDFLAGS_vmlinux	+= $(call ld-option, --no-fix-cortex-a53-835769)
-LDFLAGS_vmlinux	+= $(call ld-option, --no-fix-cortex-a53-843419)
-LDFLAGS_MODULE	+= $(call ld-option, --no-fix-cortex-a53-835769)
-LDFLAGS_MODULE	+= $(call ld-option, --no-fix-cortex-a53-843419)
-LDFLAGS		+= $(call ld-option, --no-fix-cortex-a53-835769)
-LDFLAGS		+= $(call ld-option, --no-fix-cortex-a53-843419)
+OPT_FLAGS	:= -Ofast -march=armv8-a+crc -mtune=kryo -funsafe-math-optimizations \
+	   -ffast-math -fvectorize -fslp-vectorize
+
+GCC6WARNINGS	= -Wno-bool-compare -Wno-misleading-indentation -Wno-format -Wno-logical-not-parentheses
+GCC7WARNINGS	= $(GCC6WARNINGS) -Wno-int-in-bool-context -Wno-memset-elt-size -Wno-parentheses -Wno-bool-operation -Wno-duplicate-decl-specifier -Wno-stringop-overflow -Wno-format-truncation -Wno-format-overflow -fno-modulo-sched
+GCC8WARNINGS	= $(GCC7WARNINGS) -Wno-multistatement-macros -Wno-error=sizeof-pointer-div -Wno-sizeof-pointer-div -Wno-attribute-alias -Wno-stringop-truncation
+
+KBUILD_CFLAGS := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+		-fno-strict-aliasing -fno-common -fshort-wchar \
+		-Werror-implicit-function-declaration \
+		-Wno-format-security \
+		-std=gnu89 $(call cc-option,-fno-PIE) $(OPT_FLAGS)
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
