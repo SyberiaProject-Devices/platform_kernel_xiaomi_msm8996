@@ -401,8 +401,31 @@ module_param(qlowmark, long, 0444);
 static ulong jiffies_till_first_fqs = ULONG_MAX;
 static ulong jiffies_till_next_fqs = ULONG_MAX;
 
-module_param(jiffies_till_first_fqs, ulong, 0644);
-module_param(jiffies_till_next_fqs, ulong, 0644);
+static int param_set_fqs_jiffies(const char *val, const struct kernel_param *kp)
+{
+	ulong tmp;
+	int ret = kstrtoul(val, 0, &tmp);
+
+	if (ret < 0)
+		return ret;
+
+	if (tmp > HZ)
+		tmp = HZ;
+	else if (tmp < 1)
+		tmp = 1;
+
+	/* Prevent tearing */
+	WRITE_ONCE(*(ulong *)kp->arg, tmp);
+	return 0;
+}
+
+static struct kernel_param_ops fqs_jiffies_ops = {
+	.set = param_set_fqs_jiffies,
+	.get = param_get_ulong,
+};
+
+module_param_cb(jiffies_till_first_fqs, &fqs_jiffies_ops, &jiffies_till_first_fqs, 0644);
+module_param_cb(jiffies_till_next_fqs, &fqs_jiffies_ops, &jiffies_till_next_fqs, 0644);
 
 /*
  * How long the grace period must be before we start recruiting
@@ -2133,10 +2156,6 @@ static int __noreturn rcu_gp_kthread(void *arg)
 		/* Handle quiescent-state forcing. */
 		first_gp_fqs = true;
 		j = jiffies_till_first_fqs;
-		if (j > HZ) {
-			j = HZ;
-			jiffies_till_first_fqs = HZ;
-		}
 		ret = 0;
 		for (;;) {
 			if (!ret)
@@ -2174,14 +2193,6 @@ static int __noreturn rcu_gp_kthread(void *arg)
 				trace_rcu_grace_period(rsp->name,
 						       READ_ONCE(rsp->gpnum),
 						       TPS("fqswaitsig"));
-			}
-			j = jiffies_till_next_fqs;
-			if (j > HZ) {
-				j = HZ;
-				jiffies_till_next_fqs = HZ;
-			} else if (j < 1) {
-				j = 1;
-				jiffies_till_next_fqs = 1;
 			}
 		}
 
