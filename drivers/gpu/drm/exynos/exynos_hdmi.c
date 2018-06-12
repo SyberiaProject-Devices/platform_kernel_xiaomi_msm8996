@@ -1730,6 +1730,7 @@ static int hdmi_resources_init(struct hdmi_context *hdata)
 
 	clk_set_parent(hdata->mout_hdmi, hdata->sclk_pixel);
 
+
 	for (i = 0; i < ARRAY_SIZE(supply); ++i) {
 		hdata->regul_bulk[i].supply = supply[i];
 		hdata->regul_bulk[i].consumer = NULL;

@@ -306,7 +306,7 @@ static int get_bw_buckets(struct device *dev)
 	if (!bandwidths)
 		return -ENOMEM;
 	lenb /= sizeof(*bw_buckets);
-	bw_buckets = devm_kzalloc(dev, lenb * sizeof(*bw_buckets),
+	bw_buckets = devm_kcalloc(dev, sizeof(*bw_buckets), lenb,
 			GFP_KERNEL);
 	if (!bw_buckets) {
 		devm_kfree(dev, bandwidths);
@@ -319,6 +319,7 @@ static int get_bw_buckets(struct device *dev)
 		devm_kfree(dev, bw_buckets);
 		pr_err("Unable to read bandwidth table from device tree.\n");
 		return ret;
+
 	}
 
 	curr_bw = 0;
@@ -342,7 +343,7 @@ static int freq_buckets_init(struct device *dev)
 	}
 
 	lenf /= sizeof(*freq_buckets);
-	freq_buckets = devm_kzalloc(dev, lenf * sizeof(*freq_buckets),
+	freq_buckets = devm_kcalloc(dev, sizeof(*freq_buckets), lenf,
 			GFP_KERNEL);
 	if (!freq_buckets)
 		return -ENOMEM;
@@ -364,8 +365,9 @@ static int freq_buckets_init(struct device *dev)
 				GFP_KERNEL);
 		if (!freq_entry)
 			return -ENOMEM;
-		freq_entry->buckets = devm_kzalloc(dev, sizeof(u64)*num_buckets,
-				GFP_KERNEL);
+		freq_entry->buckets = devm_kcalloc(dev,
+						   num_buckets, sizeof(u64),
+						   GFP_KERNEL);
 		if (!freq_entry->buckets) {
 			devm_kfree(dev, freq_entry);
 			return -ENOMEM;

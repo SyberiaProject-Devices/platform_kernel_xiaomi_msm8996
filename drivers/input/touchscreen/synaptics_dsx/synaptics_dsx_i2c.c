@@ -342,8 +342,9 @@ static int parse_dt(struct device *dev, struct synaptics_dsx_board_data *bdata)
 		return retval;
 	}
 
-	bdata->config_array = devm_kzalloc(dev, bdata->config_array_size *
-					sizeof(struct synaptics_dsx_config_info), GFP_KERNEL);
+	bdata->config_array = devm_kcalloc(dev, sizeof(struct synaptics_dsx_config_info),
+					bdata->config_array_size,
+					GFP_KERNEL);
 	if (!bdata->config_array) {
 		dev_err(dev, "Unable to allocate memory\n");
 		return -ENOMEM;
