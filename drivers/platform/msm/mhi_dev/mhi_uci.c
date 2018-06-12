@@ -1088,11 +1088,19 @@ static int uci_init_client_attributes(struct mhi_uci_ctxt_t *uci_ctxt)
 		client->in_chan = index * 2;
 		client->out_chan = index * 2 + 1;
 		client->in_buf_list =
-			kcalloc(chan_attrib->nr_trbs,
+			kmalloc_array(chan_attrib->nr_trbs,
 					sizeof(struct mhi_dev_iov),
 					GFP_KERNEL);
+
 		if (!client->in_buf_list)
 			return -ENOMEM;
+			if (NULL == client->in_buf_list)
+				return -ENOMEM;
+		}
+		if (i % 2 == 0)
+			chan_attrib->dir = MHI_DIR_OUT;
+		else
+			chan_attrib->dir = MHI_DIR_IN;
 	}
 	return 0;
 }
