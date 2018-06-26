@@ -14201,9 +14201,6 @@ static int tasha_codec_probe(struct snd_soc_codec *codec)
 	mutex_unlock(&codec->mutex);
 	snd_soc_dapm_sync(dapm);
 
-
-   priv_headset_type = tasha;
-
 	/* ASUS_BSP Paul +++ */
         if (!g_audiowizard_force_preset_sdev) {
 		g_audiowizard_force_preset_sdev = kzalloc(sizeof(struct switch_dev), GFP_KERNEL);
