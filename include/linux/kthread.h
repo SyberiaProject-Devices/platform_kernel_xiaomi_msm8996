@@ -165,19 +165,6 @@ extern void __kthread_init_worker(struct kthread_worker *worker,
 		(work)->func = (fn);					\
 	} while (0)
 
-/*
- * Returns true when the work could not be queued at the moment.
- * It happens when it is already pending in a worker list
- * or when it is being cancelled.
- */
-static inline bool queuing_blocked(struct kthread_worker *worker,
-				   struct kthread_work *work)
-{
-	lockdep_assert_held(&worker->lock);
-
-	return !list_empty(&work->node) || work->canceling;
-}
-
 #define kthread_init_delayed_work(dwork, fn)				\
 	do {								\
 		kthread_init_work(&(dwork)->work, (fn));		\
