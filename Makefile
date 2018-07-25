@@ -366,7 +366,6 @@ AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage -fno-tree-loop-im
 CFLAGS_KCOV	= -fsanitize-coverage=trace-pc
 
-
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE    := \
 		-I$(srctree)/arch/$(hdr-arch)/include/uapi \
@@ -392,8 +391,7 @@ POLLY_FLAGS	:= -mllvm -polly \
 		   -mllvm -polly-opt-fusion=max \
 		   -mllvm -polly-ast-use-context \
 		   -mllvm -polly-detect-keep-going \
-		   -mllvm -polly-vectorizer=stripmine \
-		   -lgomp
+		   -mllvm -polly-vectorizer=stripmine
 
 OPT_FLAGS	:= -Ofast -march=armv8-a+crc -mtune=kryo -funsafe-math-optimizations  \
 		   -ffast-math -fvectorize -fslp-vectorize -ftree-vectorize -ftree-slp-vectorize
