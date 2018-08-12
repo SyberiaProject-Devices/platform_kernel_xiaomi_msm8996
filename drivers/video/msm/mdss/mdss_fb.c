@@ -48,6 +48,7 @@
 #include <linux/file.h>
 #include <linux/kthread.h>
 #include <linux/dma-buf.h>
+#include <linux/devfreq_boost.h>
 #include "mdss_fb.h"
 #include "mdss_mdp_splash_logo.h"
 #define CREATE_TRACE_POINTS
@@ -3342,6 +3343,7 @@ static int __ioctl_transition_dyn_mode_state(struct msm_fb_data_type *mfd,
 	mutex_lock(&mfd->switch_lock);
 	switch (cmd) {
 	case MSMFB_ATOMIC_COMMIT:
+	devfreq_boost_kick(DEVFREQ_MSM_CPUBW);
 		if ((mfd->switch_state == MDSS_MDP_WAIT_FOR_VALIDATE)
 				&& validate) {
 			if (mfd->switch_new_mode != SWITCH_RESOLUTION)
