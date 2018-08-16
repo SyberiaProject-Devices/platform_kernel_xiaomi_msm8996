@@ -675,6 +675,9 @@ VOS_STATUS vos_open( v_CONTEXT_t *pVosContext, v_SIZE_t hddContextSize )
     macOpenParms.max_mgmt_tx_fail_count =
                      pHddCtx->cfg_ini->max_mgmt_tx_fail_count;
 
+    macOpenParms.keep_dwell_time_passive =
+                     pHddCtx->cfg_ini->keeppassivedwelltime;
+
 #ifdef WLAN_FEATURE_LPSS
     macOpenParms.is_lpass_enabled = pHddCtx->cfg_ini->enablelpasssupport;
 #endif
@@ -3354,3 +3357,51 @@ v_BOOL_t vos_is_ch_switch_with_csa_enabled(void)
 	return FALSE;
 }
 #endif//#ifdef WLAN_FEATURE_SAP_TO_FOLLOW_STA_CHAN
+
+#ifdef FEATURE_WLAN_DISABLE_CHANNEL_SWITCH
+/**
+ * vos_is_chan_ok_for_dnbs() - check if the channel is valid for dnbs
+ *
+ * @channel: the given channel to be compared
+ *
+ * This function check if the channel is valid for dnbs. If the disable channel
+ * switch is enabled and the channel is same as SAP's channel, return true, if
+ * the channel is not same as SAP's channel or there's no SAP, return false. If
+ * the disable channel switch is not enabled, return true.
+ *
+ * Return: bool
+ */
+bool vos_is_chan_ok_for_dnbs(uint8_t channel)
+{
+	hdd_context_t *pHddCtx;
+	bool equal = false;
+
+	if (!channel) {
+		VOS_TRACE(VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_ERROR,
+				"%s: Invalid parameter", __func__);
+		return false;
+	}
+
+	pHddCtx = (hdd_context_t*)(gpVosContext->pHDDContext);
+	if(NULL == pHddCtx)
+	{
+	  VOS_TRACE( VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_FATAL,
+				"%s: Hdd Context is Null", __func__);
+	  return false;
+	}
+
+	spin_lock_bh(&pHddCtx->restrict_offchan_lock);
+	if (pHddCtx->restrict_offchan_flag) {
+		VOS_TRACE(VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_INFO,
+				"%s: flag is set", __func__);
+		wlansap_channel_compare(gpVosContext->pMACContext, channel, &equal);
+		spin_unlock_bh(&pHddCtx->restrict_offchan_lock);
+		return equal;
+	}
+	else
+		VOS_TRACE(VOS_MODULE_ID_VOSS, VOS_TRACE_LEVEL_INFO,
+				"%s: flag is not set", __func__);
+	spin_unlock_bh(&pHddCtx->restrict_offchan_lock);
+	return true;
+}
+#endif

@@ -2282,7 +2282,7 @@ typedef enum
 #define CFG_THERMAL_SHUTDOWN_ENABLE_NAME      "gThermalShutdownEnable"
 #define CFG_THERMAL_SHUTDOWN_ENABLE_MIN       ( 0 )
 #define CFG_THERMAL_SHUTDOWN_ENABLE_MAX       ( 1 )
-#define CFG_THERMAL_SHUTDOWN_ENABLE_DEFAULT   ( 1 )
+#define CFG_THERMAL_SHUTDOWN_ENABLE_DEFAULT   ( 0 )
 
 /*
  * <ini>
@@ -3538,6 +3538,11 @@ This feature requires the dependent cfg.ini "gRoamPrefer5GHz" set to 1 */
 #define CFG_ENABLE_SIFS_BURST_MAX                  (3)
 #define CFG_ENABLE_SIFS_BURST_DEFAULT              ( 0 )
 
+#define CFG_KEEP_PASSIVE_DWELL_TIME                       "gKeepPassiveDwellTime"
+#define CFG_KEEP_PASSIVE_DWELL_TIME_DEFAULT               ( 0 )
+#define CFG_KEEP_PASSIVE_DWELL_TIME_MIN                   ( 0 )
+#define CFG_KEEP_PASSIVE_DWELL_TIME_MAX                   ( 1 )
+
 #ifdef WLAN_FEATURE_LPSS
 #define CFG_ENABLE_LPASS_SUPPORT                          "gEnableLpassSupport"
 #define CFG_ENABLE_LPASS_SUPPORT_DEFAULT                  ( 0 )
@@ -4537,6 +4542,14 @@ FG_BTC_BT_INTERVAL_PAGE_P2P_STA_DEFAULT
 #define CFG_WOW_PULSE_INTERVAL_HIGH_MIN     (20)
 #define CFG_WOW_PULSE_INTERVAL_HIGH_MAX     (40)
 #define CFG_WOW_PULSE_INTERVAL_HIGH_DEFAULT (20)
+
+/*
+ * Pulse repetition count
+ */
+#define CFG_WOW_PULSE_REPEAT_COUNT_NAME    "gwow_pulse_repeat_count"
+#define CFG_WOW_PULSE_REPEAT_COUNT_MIN     (1)
+#define CFG_WOW_PULSE_REPEAT_COUNT_MAX     (0xFFFFFFFF)
+#define CFG_WOW_PULSE_REPEAT_COUNT_DEFAULT (0xFFFFFFFF)
 #endif
 
 /*
@@ -5945,6 +5958,7 @@ struct hdd_config {
 #endif /* WLAN_LOGGING_SOCK_SVC_ENABLE */
 
    v_U8_t                      enableSifsBurst;
+   v_BOOL_t                    keeppassivedwelltime;
 
 #ifdef WLAN_FEATURE_LPSS
    v_BOOL_t                    enablelpasssupport;
@@ -6105,6 +6119,7 @@ struct hdd_config {
    uint8_t                     wow_pulse_pin;
    uint16_t                    wow_pulse_interval_high;
    uint16_t                    wow_pulse_interval_low;
+   uint16_t                    wow_pulse_repeat_count;
 #endif
    bool                        enable_go_cts2self_for_sta;
    uint8_t                     ht_mpdu_density;

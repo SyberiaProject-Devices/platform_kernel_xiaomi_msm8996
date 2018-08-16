@@ -3980,6 +3980,13 @@ REG_TABLE_ENTRY g_registry_table[] =
               CFG_ENABLE_SIFS_BURST_MIN,
               CFG_ENABLE_SIFS_BURST_MAX ),
 
+   REG_VARIABLE(CFG_KEEP_PASSIVE_DWELL_TIME, WLAN_PARAM_Integer,
+               hdd_config_t, keeppassivedwelltime,
+               VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+               CFG_KEEP_PASSIVE_DWELL_TIME_DEFAULT,
+               CFG_KEEP_PASSIVE_DWELL_TIME_MIN,
+               CFG_KEEP_PASSIVE_DWELL_TIME_MAX),
+
 #ifdef WLAN_FEATURE_LPSS
    REG_VARIABLE(CFG_ENABLE_LPASS_SUPPORT, WLAN_PARAM_Integer,
                hdd_config_t, enablelpasssupport,
@@ -4701,6 +4708,13 @@ REG_TABLE_ENTRY g_registry_table[] =
                 CFG_WOW_PULSE_INTERVAL_HIGH_DEFAULT,
                 CFG_WOW_PULSE_INTERVAL_HIGH_MIN,
                 CFG_WOW_PULSE_INTERVAL_HIGH_MAX),
+
+   REG_VARIABLE(CFG_WOW_PULSE_REPEAT_COUNT_NAME, WLAN_PARAM_Integer,
+                hdd_config_t, wow_pulse_repeat_count,
+                VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+                CFG_WOW_PULSE_REPEAT_COUNT_DEFAULT,
+                CFG_WOW_PULSE_REPEAT_COUNT_MIN,
+                CFG_WOW_PULSE_REPEAT_COUNT_MAX),
 #endif
 
    REG_VARIABLE(CFG_MIB_STATS_ENABLED_NAME, WLAN_PARAM_Integer,
