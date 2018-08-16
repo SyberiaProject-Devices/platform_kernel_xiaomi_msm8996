@@ -689,7 +689,8 @@ KBUILD_CFLAGS 	+= $(call cc-disable-warning, maybe-uninitialized,) \
 		   $(call cc-disable-warning, attribute-alias,) \
 		   $(call cc-disable-warning, packed-not-aligned,) \
 		   $(call cc-disable-warning, deprecated-declarations,) \
-		   $(call cc-disable-warning, sizeof-pointer-memaccess,)
+		   $(call cc-disable-warning, sizeof-pointer-memaccess,) \
+		   $(call cc-disable-warning, return-stack-address,)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= $(call cc-option,-Oz,-Os) $(call cc-disable-warning,maybe-uninitialized,)
