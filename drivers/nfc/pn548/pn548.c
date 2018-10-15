@@ -43,6 +43,7 @@
 
 #define MAX_BUFFER_SIZE 512
 #define _A1_PN66T_
+#define DEBUG false
 
 static struct wake_lock fieldon_wl;
 struct pn548_dev	{
@@ -538,7 +539,7 @@ static int pn548_remove(struct i2c_client *client)
 static int pn548_suspend(struct device *device)
 {
 	struct i2c_client *client = to_i2c_client(device);
-	pr_err("%s ++ \n", __func__);
+	if (DEBUG) pr_debug("%s ++ \n", __func__);
 
 	if (device_may_wakeup(&client->dev))
 		enable_irq_wake(client->irq);
@@ -547,7 +548,7 @@ static int pn548_suspend(struct device *device)
 static int pn548_resume(struct device *device)
 {
 	struct i2c_client *client = to_i2c_client(device);
-	pr_err("%s -- \n", __func__);
+	if (DEBUG) pr_debug("%s -- \n", __func__);
 	if (device_may_wakeup(&client->dev))
 		disable_irq_wake(client->irq);
 
