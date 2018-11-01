@@ -23,7 +23,6 @@
 #include <linux/usb/gadget.h>
 #include <linux/usb/otg.h>
 #include <linux/clk.h>
-#include <linux/wakelock.h>
 #include <linux/pm_qos.h>
 #include <linux/hrtimer.h>
 #include <linux/power_supply.h>
@@ -465,7 +464,7 @@ struct msm_otg {
 	struct reset_control *link_rst;
 	int vdd_levels[3];
 	unsigned dcd_time;
-	struct wake_lock wlock;
+	struct wakeup_source wlock;
 	unsigned long caps;
 	struct msm_xo_voter *xo_handle;
 	uint32_t bus_perf_client;
