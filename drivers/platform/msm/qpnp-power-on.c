@@ -32,7 +32,6 @@
 #include <linux/qpnp/power-on.h>
 #include <linux/qpnp/qpnp-pbs.h>
 #include <linux/qpnp-misc.h>
-#include <linux/wakelock.h>
 
 #define CREATE_MASK(NUM_BITS, POS) \
 	((unsigned char) (((1 << (NUM_BITS)) - 1) << (POS)))
@@ -238,7 +237,7 @@ struct qpnp_pon {
 	bool			is_keycomb_pressed;
 };
 
-static struct wake_lock volume_down_wl;
+static struct wakeup_source volume_down_wl;
 static const char *wake_lock_name = "volume_down_locker";
 static struct qpnp_pon *sys_reset_dev;
 static DEFINE_SPINLOCK(spon_list_slock);
@@ -1048,7 +1047,7 @@ static irqreturn_t qpnp_resin_irq(int irq, void *_pon)
 	int rc;
 	struct qpnp_pon *pon = _pon;
 
-	wake_lock_timeout(&volume_down_wl, 3*HZ);
+	__pm_wakeup_event(&volume_down_wl, 300);
 	rc = qpnp_pon_input_dispatch(pon, PON_RESIN);
 	if (rc)
 		dev_err(&pon->spmi->dev, "Unable to send input event\n");
@@ -2558,8 +2557,8 @@ static int qpnp_pon_probe(struct spmi_device *spmi)
 
 	qpnp_pon_debugfs_init(spmi);
 	/* if wake_lock not be initied, init it */
-	if (volume_down_wl.ws.name != wake_lock_name)
-		wake_lock_init(&volume_down_wl, WAKE_LOCK_SUSPEND, wake_lock_name);
+	if (volume_down_wl.name != wake_lock_name)
+		wakeup_source_init(&volume_down_wl, wake_lock_name);
 	return 0;
 }
 
@@ -2580,7 +2579,7 @@ static int qpnp_pon_remove(struct spmi_device *spmi)
 		list_del(&pon->list);
 		spin_unlock_irqrestore(&spon_list_slock, flags);
 	}
-	wake_lock_destroy(&volume_down_wl);
+	wakeup_source_trash(&volume_down_wl);
 	return 0;
 }
 

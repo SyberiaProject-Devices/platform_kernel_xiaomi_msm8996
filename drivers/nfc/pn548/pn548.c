@@ -19,6 +19,7 @@
 
 #include <linux/kernel.h>
 #include <linux/module.h>
+#include <linux/device.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
 #include <linux/init.h>
@@ -37,7 +38,6 @@
 #include <linux/regulator/consumer.h>
 #include <linux/miscdevice.h>
 #include <linux/spinlock.h>
-#include <linux/wakelock.h>
 
 #include <pn548.h>
 
@@ -45,7 +45,7 @@
 #define _A1_PN66T_
 #define DEBUG false
 
-static struct wake_lock fieldon_wl;
+static struct wakeup_source fieldon_wl;
 struct pn548_dev	{
 	wait_queue_head_t	read_wq;
 	struct mutex		read_mutex;
@@ -59,7 +59,7 @@ struct pn548_dev	{
 	bool			irq_enabled;
 	spinlock_t		irq_enabled_lock;
 	bool			do_reading;
-	struct wake_lock   wl;
+	struct wakeup_source  	wl;
 	bool cancel_read;
 };
 
@@ -101,7 +101,8 @@ static irqreturn_t pn548_dev_irq_handler(int irq, void *dev_id)
 
 	/* Wake up waiting readers */
 	wake_up(&pn548_dev->read_wq);
-	wake_lock(&pn548_dev->wl);
+	__pm_stay_awake(&pn548_dev->wl);
+
 
 	return IRQ_HANDLED;
 }
@@ -151,11 +152,11 @@ static ssize_t pn548_dev_read(struct file *filp, char __user *buf,
 	/* Read data */
 	ret = i2c_master_recv(pn548_dev->client, tmp, count);
 	mutex_unlock(&pn548_dev->read_mutex);
-	wake_unlock(&pn548_dev->wl);
+	__pm_relax(&pn548_dev->wl);
 
 
 	if (((tmp[0] & 0xff) == 0x61) && ((tmp[1] & 0xff) == 0x07) && ((tmp[2] & 0xff) == 0x01))
-		wake_lock_timeout(&fieldon_wl, msecs_to_jiffies(3*1000));
+		__pm_wakeup_event(&fieldon_wl, 3000);
 
 	if (ret < 0) {
 		pr_err("%s: PN548 i2c_master_recv returned %d\n", __func__, ret);
@@ -175,7 +176,7 @@ static ssize_t pn548_dev_read(struct file *filp, char __user *buf,
 
 fail:
 	mutex_unlock(&pn548_dev->read_mutex);
-	wake_unlock(&pn548_dev->wl);
+	__pm_relax(&pn548_dev->wl);
 	return ret;
 }
 
@@ -465,8 +466,9 @@ static int pn548_probe(struct i2c_client *client,
 	spin_lock_init(&pn548_dev->irq_enabled_lock);
 
 	/*Initialise wake lock*/
-	wake_lock_init(&pn548_dev->wl, WAKE_LOCK_SUSPEND, "nfc_locker");
-	wake_lock_init(&fieldon_wl, WAKE_LOCK_SUSPEND, "nfc_locker");
+	wakeup_source_init(&pn548_dev->wl, "nfc_locker");
+	wakeup_source_init(&fieldon_wl, "nfc_locker");
+
 	pn548_dev->pn548_device.minor = MISC_DYNAMIC_MINOR;
 	pn548_dev->pn548_device.name = "pn548";
 	pn548_dev->pn548_device.fops = &pn548_dev_fops;
@@ -525,8 +527,8 @@ static int pn548_remove(struct i2c_client *client)
 	free_irq(client->irq, pn548_dev);
 	misc_deregister(&pn548_dev->pn548_device);
 	mutex_destroy(&pn548_dev->read_mutex);
-	wake_lock_destroy(&pn548_dev->wl);
-	wake_lock_destroy(&fieldon_wl);
+	wakeup_source_trash(&pn548_dev->wl);
+	wakeup_source_trash(&fieldon_wl);
 	gpio_free(pn548_dev->irq_gpio);
 	gpio_free(pn548_dev->ven_gpio);
 	gpio_free(pn548_dev->firm_gpio);
