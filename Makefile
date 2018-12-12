@@ -390,16 +390,28 @@ LINUXINCLUDE    := \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-POLLY_FLAGS	:= -mllvm -polly \
-		   -mllvm -polly-run-dce \
-		   -mllvm -polly-run-inliner \
-		   -mllvm -polly-opt-fusion=max \
-		   -mllvm -polly-ast-use-context \
-		   -mllvm -polly-detect-keep-going \
-		   -mllvm -polly-vectorizer=stripmine
+#POLLY_FLAGS	:= -mllvm -polly \
+#		   -mllvm -polly-run-dce \
+#		   -mllvm -polly-run-inliner \
+#		   -mllvm -polly-opt-fusion=max \
+#		   -mllvm -polly-ast-use-context \
+#		   -mllvm -polly-detect-keep-going \
+#		   -mllvm -polly-vectorizer=stripmine
 
-OPT_FLAGS	:= -Ofast -march=armv8-a+crc -mtune=kryo -funsafe-math-optimizations  \
-		   -ffast-math -fvectorize -fslp-vectorize -ftree-vectorize -ftree-slp-vectorize
+POLLY_FLAGS	:= -mllvm -polly \
+	   -mllvm -polly-parallel -lgomp \
+	   -mllvm -polly-run-dce \
+	   -mllvm -polly-run-inliner \
+	   -mllvm -polly-opt-fusion=max \
+	   -mllvm -polly-ast-use-context \
+	   -mllvm -polly-detect-keep-going \
+	   -mllvm -polly-vectorizer=stripmine
+
+#OPT_FLAGS	:= -Ofast -march=armv8-a+crc -mtune=kryo -funsafe-math-optimizations  \
+#		   -ffast-math -fvectorize -fslp-vectorize -ftree-vectorize -ftree-slp-vectorize
+
+OPT_FLAGS	:= -mcpu=kryo -funsafe-math-optimizations -ffast-math \
+	   -fvectorize -fslp-vectorize -fopenmp $(POLLY_FLAGS)
 
 GCC6WARNINGS	= -Wno-bool-compare -Wno-misleading-indentation -Wno-format -Wno-logical-not-parentheses
 GCC7WARNINGS	= $(GCC6WARNINGS) -Wno-int-in-bool-context -Wno-memset-elt-size -Wno-parentheses -Wno-bool-operation -Wno-duplicate-decl-specifier -Wno-stringop-overflow -Wno-format-truncation -Wno-format-overflow -fno-modulo-sched
@@ -409,7 +421,8 @@ KBUILD_CFLAGS := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		-fno-strict-aliasing -fno-common -fshort-wchar \
 		-Werror-implicit-function-declaration \
 		-Wno-format-security \
-		-std=gnu89 $(call cc-option,-fno-PIE) $(OPT_FLAGS) $(POLLY_FLAGS)
+		-std=gnu89 $(call cc-option,-fno-PIE) $(OPT_FLAGS)
+# $(POLLY_FLAGS)
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
