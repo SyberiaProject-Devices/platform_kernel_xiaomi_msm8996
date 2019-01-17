@@ -217,6 +217,7 @@ snd-soc-tas2552-objs := tas2552.o
 snd-soc-tas2555-objs := tas2555-codec.o tas2555-core.o tas2555-regmap.o tas2555-misc.o tiload.o
 snd-soc-opa1622-objs := opa1622.o
 snd-soc-lm48560-objs := lm48560.o
+obj-y += tfa98xx/
 
 obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
 obj-$(CONFIG_SND_SOC_AB8500_CODEC)	+= snd-soc-ab8500-codec.o
