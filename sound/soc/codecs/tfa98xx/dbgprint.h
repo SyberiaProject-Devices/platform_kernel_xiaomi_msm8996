@@ -11,9 +11,6 @@
 #   define _DBGPRINT_H
 
 /* Debugging macro's. */
-#   ifndef DEBUG
-#      define DEBUG
-#   endif
 
 #   ifndef ASSERT
 //#define ASSERT
