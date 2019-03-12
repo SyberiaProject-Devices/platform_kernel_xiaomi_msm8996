@@ -119,7 +119,7 @@ android/configs/android-*.cfg
 
 *.old
 /working/
-/gemini_out/
+/gemini_out
 /compiled/
 /package/zImage
 /package/log
