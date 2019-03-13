@@ -108,6 +108,7 @@ static void opa1622_startup(struct opa1622_priv *opa1622, int enable)
 static int opa1622_probe(struct snd_soc_codec *codec)
 {
 	struct opa1622_priv *opa1622;
+	struct snd_soc_dapm_context *dapm;
 	int ret = 0;
 
 	dev_dbg(codec->dev, "%s: enter\n", __func__);
@@ -197,10 +198,11 @@ static int opa1622_probe(struct snd_soc_codec *codec)
 		}
 	}
 
-	snd_soc_dapm_ignore_suspend(&codec->dapm, "OPA IN1");
-	snd_soc_dapm_ignore_suspend(&codec->dapm, "OPA IN1");
-	snd_soc_dapm_ignore_suspend(&codec->dapm, "OPA OUT2");
-	snd_soc_dapm_ignore_suspend(&codec->dapm, "OPA OUT2");
+	dapm = snd_soc_codec_get_dapm(codec);
+	snd_soc_dapm_ignore_suspend(dapm, "OPA IN1");
+	snd_soc_dapm_ignore_suspend(dapm, "OPA IN1");
+	snd_soc_dapm_ignore_suspend(dapm, "OPA OUT2");
+	snd_soc_dapm_ignore_suspend(dapm, "OPA OUT2");
 
 	opa1622->codec = codec;
 	snd_soc_codec_set_drvdata(codec, opa1622);
@@ -239,7 +241,7 @@ static int opa1622_remove(struct snd_soc_codec *codec)
 static int opa1622_pa_event(struct snd_soc_dapm_widget *w,
 		struct snd_kcontrol *kcontrol, int event)
 {
-	struct snd_soc_codec *codec = w->codec;
+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
 	struct opa1622_priv *opa1622 = snd_soc_codec_get_drvdata(codec);
 	int port;
 
@@ -311,10 +313,12 @@ static const struct snd_soc_dapm_route opa1622_routes[] = {
 static struct snd_soc_codec_driver opa1622_drv = {
 	.probe = opa1622_probe,
 	.remove = opa1622_remove,
-	.dapm_widgets = opa1622_widgets,
-	.num_dapm_widgets = ARRAY_SIZE(opa1622_widgets),
-	.dapm_routes = opa1622_routes,
-	.num_dapm_routes = ARRAY_SIZE(opa1622_routes),
+	.component_driver = {
+		.dapm_widgets = opa1622_widgets,
+		.num_dapm_widgets = ARRAY_SIZE(opa1622_widgets),
+		.dapm_routes = opa1622_routes,
+		.num_dapm_routes = ARRAY_SIZE(opa1622_routes),
+ 	}
 };
 
 static int opa1622_pa_probe(struct platform_device *pdev)
