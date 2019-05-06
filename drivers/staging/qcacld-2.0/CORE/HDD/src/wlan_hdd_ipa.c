@@ -1687,8 +1687,10 @@ static void hdd_ipa_uc_op_cb(struct op_msg_type *op_msg, void *usr_ctxt)
 		return;
 	}
 
+#ifdef TRACE_RECORD
 	HDD_IPA_DP_LOG(VOS_TRACE_LEVEL_DEBUG,
 		"%s, OPCODE %s", __func__, op_string[msg->op_code]);
+#endif
 
 	if ((HDD_IPA_UC_OPCODE_TX_RESUME == msg->op_code) ||
 		(HDD_IPA_UC_OPCODE_RX_RESUME == msg->op_code)) {
