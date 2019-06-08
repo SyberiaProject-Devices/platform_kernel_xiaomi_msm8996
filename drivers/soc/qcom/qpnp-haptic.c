@@ -1665,6 +1665,9 @@ static ssize_t qpnp_hap_hi_z_period_show(struct device *dev,
 	case QPNP_HAP_LRA_HIGH_Z_OPT3:
 		str = "high_z_opt3";
 		break;
+	default:
+		str = NULL;
+		break;
 	}
 
 	return snprintf(buf, PAGE_SIZE, "%s\n", str);
@@ -2984,11 +2987,12 @@ static int qpnp_haptic_probe(struct platform_device *pdev)
 	hap = devm_kzalloc(&pdev->dev, sizeof(*hap), GFP_KERNEL);
 	if (!hap)
 		return -ENOMEM;
-		hap->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-		if (!hap->regmap) {
-			pr_err("Couldn't get parent's regmap\n");
-			return -EINVAL;
-		}
+
+	hap->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+	if (!hap->regmap) {
+		pr_err("Couldn't get parent's regmap\n");
+		return -EINVAL;
+	}
 
 	hap->pdev = pdev;
 
