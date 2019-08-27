@@ -1798,7 +1798,7 @@
 		peripheral_mem: peripheral_region@8fe00000 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0x0 0x8fe00000 0x0 0x2b00000>;
+			reg = <0x0 0x8fe00000 0x0 0x2d00000>;
 		};
 
 		/delete-node/ modem_region@88800000;
