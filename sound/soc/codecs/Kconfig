@@ -660,7 +660,7 @@ config SND_SOC_TAS2555
 	depends on I2C
 
 config SND_SOC_OPA1622
-	tristate
+	tristate "Texas Instruments OPA1622 Audio Operational Amplifier"
 
 config SND_SOC_LM48560
 	tristate "Texas Instruments LM48560 ceramic speaker amplifier"
@@ -760,7 +760,7 @@ config SND_SOC_WCD934X_MBHC
 	select SND_SOC_WCD_MBHC
 
 config SND_SOC_WSA881X
-        tristate
+        tristate "WSA881X Smart Speaker Amplifier"
 	select MSM_CDC_PINCTRL
 	select REGMAP_SWR
 
