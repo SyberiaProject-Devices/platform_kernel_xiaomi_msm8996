@@ -13,4 +13,4 @@
 
  Copyright (C) 2019 Andrzej (xNombre) Perczak kartapolska@gmail.com
 
- If you want to buy me a coffe (very appreciated) [DONATE](https://goo.gl/j8RcFQ)
+ If you want to buy me a coffee (very appreciated) [DONATE](https://goo.gl/j8RcFQ)
