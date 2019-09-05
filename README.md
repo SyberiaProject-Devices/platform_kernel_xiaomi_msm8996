@@ -1,19 +1,16 @@
-4.4 kernel for Xiaomi Mi 5
+4.4 kernel for Xiaomi msm8996 family devices
 ==========
 
-## Working:
- * Everything is working! wHoA!
+ This branch is stock 4.4 kernel, android recomended defconfig is kept.
+ No custom tweaks applied. Only bug and compilator warning fixes, upstreaming, rock stability.
+ The aim is to keep it clean for other developers. You are advised to fork THIS particular branch for development purposes.
 
-## Broken:
- * ~~Camera~~ fixed in commit ddb61f9412fc - finally!
- * ~~USB (OTG works)~~ - fixed with new configfs rc script
- * ~~Very rare panics due to~~ - iommu panic, can't reproduce it so let's call it a day
+## Pull requests
 
+ Pull requests are WELCOME. Remember your commits have to be neat&clean and provide actual bug fix or new feature.
 
- This tree is created with Zuk Z2 kernel, huge thanks to DD3Boh for initial bringup!
+## Initial Author
 
- I'm currently using this kernel with custom LineageOS build supporting new 4.4 API, it's working like a charm!
+ Copyright (C) 2019 Andrzej (xNombre) Perczak kartapolska@gmail.com
 
- You can hit me on Telegram Mi5 group [CLICK](https://t.me/joinchat/B83Gv1NVG9wRGS_-EGxewg)
-
- If you want to buy me a coffe (very appreciated) [DONATE](https://goo.gl/j8RcFQ)
+ If you want to buy me a coffee (very appreciated) [DONATE](https://goo.gl/j8RcFQ)
